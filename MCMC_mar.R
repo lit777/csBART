@@ -24,6 +24,7 @@ setnames(pm2013, c("ZCTA5","zip_concentrations"),c("zip","pm2013"))
 pm2014 <- read_rds("data/pm25_2014.rds")
 pm2014 <- pm2014[,c(2,6)]
 setnames(pm2014, c("ZCTA5","zip_concentrations"),c("zip","pm2014"))
+load("data/pm.RData")
 
 # CENSUS 2010
 census <- read.csv("data/subset_census_2010_with_zip.csv") 
