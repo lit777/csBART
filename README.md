@@ -6,8 +6,8 @@ To run the proposed models for each simulation scenario
 - run test_R_mar.R for the marginal model
 - run sep_R_sep.R for the separate model
 
-To run the proposed models for the application study
-- set the working directory to app"X" where X denotes the year of the target study (2013 vs 2014)
+To run the proposed models for the application study (year 2013)
+- set the working directory to "app2013"
 - run MCMC_mar.R for the marginal model
 - run MCMC_sep.R for the separate model
 
@@ -16,4 +16,4 @@ To extract the census data
 
 To extract the weather data
 - run weather_data.R in 'data' subfolder. (But, the weather source files are not available here). 
-- to run the main functions (e.g., test_R_mar.R and test_R_sep.R), post-processed data (data2013 and data2014) are provided in the 'data' subfolder and those are sufficient to run the functions.
+- to run the main functions (e.g., test_R_mar.R and test_R_sep.R), post-processed data (data2013) is provided in the 'data' subfolder and those are sufficient to run the functions.
