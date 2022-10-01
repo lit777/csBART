@@ -74,10 +74,9 @@ List MCMC_mar(
     NumericVector Effect (n_post);
     NumericVector PO_Y1  (n_post);
     NumericVector PO_Y0  (n_post);
-    NumericMatrix PS (n, n_post);
     NumericMatrix predicted_Y1 (n, n_post);
     NumericMatrix predicted_Y0 (n, n_post);
-    IntegerMatrix ind    (n_post, P);
+    IntegerMatrix ind    (n_post, P+1);
     int post_sample_idx = 0;
 
     IntegerMatrix Obs_list(n, m); // changed list to matrix
@@ -273,7 +272,7 @@ List MCMC_mar(
             double dir_lik_p, dir_lik, ratio;
 
             NumericVector add_max(add.length() + 1);
-            add_max(0) = max(add);
+            add_max(0) = add1(0);
             add_max[Rcpp::Range(1, add.length())] = add;
 
             NumericVector p_prop_prob = rdirichlet(1, add1 + post_dir_alpha + add_max);
@@ -281,9 +280,9 @@ List MCMC_mar(
             log_with_LB(log_p_prop_prob, p_prop_prob);
             log_with_LB(log_prop_prob,   prop_prob);
 
-            dir_lik_p = sum(add) * log(1 / (1 - p_prop_prob(0))) + (add_max(0) + post_dir_alpha(0) - 1.0) * log_p_prop_prob(0) + sum((add1[Rcpp::Range(1, P)] + add + post_dir_alpha[Rcpp::Range(1, P)] - 1.0) * log_p_prop_prob[Rcpp::Range(1, P)]);
+            dir_lik_p = sum(add) * log(1 / (1 - p_prop_prob(0))) + (add1(0) + post_dir_alpha(0) - 1.0) * log_p_prop_prob(0) + sum((add1[Rcpp::Range(1, P)] + add + post_dir_alpha[Rcpp::Range(1, P)] - 1.0) * log_p_prop_prob[Rcpp::Range(1, P)]);
 
-            dir_lik = sum(add) * log(1 / (1 - prop_prob(0))) + (add_max(0) + post_dir_alpha(0) - 1.0) * log_prop_prob(0) + sum((add1[Rcpp::Range(1, P)] + add + post_dir_alpha[Rcpp::Range(1, P)] - 1.0) * log_prop_prob[Rcpp::Range(1, P)]);
+            dir_lik = sum(add) * log(1 / (1 - prop_prob(0))) + (add1(0) + post_dir_alpha(0) - 1.0) * log_prop_prob(0) + sum((add1[Rcpp::Range(1, P)] + add + post_dir_alpha[Rcpp::Range(1, P)] - 1.0) * log_prop_prob[Rcpp::Range(1, P)]);
 
             ratio = dir_lik_p + sum((add1 + post_dir_alpha + add_max - 1.0) * log_prop_prob) - dir_lik - sum((add1 + post_dir_alpha + add_max - 1.0) * log_p_prop_prob);
 
@@ -309,7 +308,6 @@ List MCMC_mar(
                     dt1_list[i].Predict_mar(Tree00, Xcut1, xpred_mult, n, 0);
                 }
                 // Effect(post_sample_idx) = mean(rowSums(Tree11) - rowSums(Tree00));
-                PS (_,post_sample_idx) = clone(rowSums(Tree));
                 predicted_Y1 (_, post_sample_idx) = clone(rowSums(Tree11));
                 predicted_Y0 (_, post_sample_idx) = clone(rowSums(Tree00));
                 PO_Y1  (post_sample_idx)          = mean(predicted_Y1(_, post_sample_idx));
@@ -327,7 +325,6 @@ List MCMC_mar(
     } // end of MCMC iterations
 
     List L = List::create(
-        Named("PS")           = PS,
         Named("Effect")       = Effect,
         Named("PO_Y1")        = PO_Y1,
         Named("PO_Y0")        = PO_Y0,
